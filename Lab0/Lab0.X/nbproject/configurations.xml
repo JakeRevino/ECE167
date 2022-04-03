@@ -43,6 +43,10 @@
       <itemPath>../../Common/Uart1.c</itemPath>
       <itemPath>../../Common/pwm.c</itemPath>
       <itemPath>../../Common/timers.c</itemPath>
+      <itemPath>Monotone.c</itemPath>
+      <itemPath>ADReading.c</itemPath>
+      <itemPath>PotTones.c</itemPath>
+      <itemPath>Instrument.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -116,7 +120,7 @@
         <property key="place-data-into-section" value="false"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
-        <property key="preprocessor-macros" value="HELLO_WORLD_TEST"/>
+        <property key="preprocessor-macros" value="INSTRUMENT_TEST"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="tentative-definitions" value="-fno-common"/>
