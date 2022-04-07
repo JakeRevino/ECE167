@@ -28,8 +28,8 @@ int main(void) {
     while (1) {
         // read value from pot but only change it if the new value has changed enough
         PotValue = AD_ReadADPin(pot);
-        if ((PotValue > OldPotValue + 10) || (PotValue < OldPotValue - 10)) {
-            FilterValue = (PotValue + OldPotValue) / 2;
+        if ((PotValue > OldPotValue + 10) || (PotValue < OldPotValue - 10)) { // want to have a difference of 10
+            FilterValue = (PotValue + OldPotValue) / 2; // taking the moving average
             OldPotValue = PotValue;
         }
         // create an offset for the pot value to not go below 0
