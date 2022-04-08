@@ -12,6 +12,7 @@
       <itemPath>ToneGeneration.h</itemPath>
       <itemPath>OledDriver.h</itemPath>
       <itemPath>Ascii.h</itemPath>
+      <itemPath>timers.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -29,6 +30,8 @@
       <itemPath>ToneGeneration.c</itemPath>
       <itemPath>OledDriver.c</itemPath>
       <itemPath>Ascii.c</itemPath>
+      <itemPath>PiezoSensor.c</itemPath>
+      <itemPath>timers.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -99,7 +102,7 @@
         <property key="place-data-into-section" value="false"/>
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
-        <property key="preprocessor-macros" value="LAB1_MAIN"/>
+        <property key="preprocessor-macros" value="PIEZO_TEST"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="tentative-definitions" value="-fno-common"/>
