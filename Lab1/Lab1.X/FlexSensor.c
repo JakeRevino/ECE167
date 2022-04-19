@@ -6,6 +6,7 @@
 #include "ToneGeneration.h"
 #include "serial.h"
 
+//#define FLEX_SENSOR_TEST // uncomment this line to use the module. OR, define it in the gcc "Processing and messages" menu 
 #ifdef FLEX_SENSOR_TEST
 
 #define DELAY(x)    {int wait; for (wait = 0; wait <= x; wait++) {asm("nop");}}

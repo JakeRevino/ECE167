@@ -7,7 +7,7 @@
 #include "serial.h"
 
 #define DELAY(x)    {int wait; for (wait = 0; wait <= x; wait++) {asm("nop");}}
-#define TIME 200000
+#define TIME 100000
 #define SCALER 10
 #define ValFromScope 100 // Peak-to-peak voltage measured on scope
 
@@ -36,14 +36,14 @@ int main(void) {
 
         if (piezoVal > ValFromScope) { // if true then piezo got flicked
             ToneGeneration_SetFrequency(flexAngle / SCALER); // dividing it by 10 to reduce frequency to an audible range
-            ToneGeneration_ToneOn();
-            
+            ToneGeneration_ToneOn(); // turn on the tone
+
             for (i = 0; i < TIME; i++) {
-                 piezoVal = AD_ReadADPin(piezo); // re-read piezo sensor
-                 if (piezoVal > ValFromScope) { // check if piezo was flicked again
-                     i = 0; // reset the timer
-                 }
-                 continue;
+                piezoVal = AD_ReadADPin(piezo); // re-read piezo sensor
+                if (piezoVal > ValFromScope) { // check if piezo was flicked again
+                    i = 0; // reset the timer
+                }
+                continue;
             }
             ToneGeneration_ToneOff(); // turn off the tone when done
         }
