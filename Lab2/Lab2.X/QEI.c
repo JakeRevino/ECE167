@@ -1,6 +1,89 @@
 #include "QEI.h"
 #include "BOARD.h"
 #include <xc.h>
+#include <stdio.h>
+
+//#define portA PORTDbits.RD6 // pin 36
+//#define portB PORTDbits.RD7 // pin 37
+
+static int currentQEIcount = 0;
+static int portA = 0;
+static int portB = 0;
+static int prevA = 0;
+static int prevB = 0;
+static int state = 0b00;
+
+void Rollover() { // this function keeps the count between 0 and 360 degrees
+    if (currentQEIcount == 97) {
+        currentQEIcount = 0;
+    }
+    if (currentQEIcount == -1) {
+        currentQEIcount = 96;
+    }
+}
+
+void StateMachine(int A, int B); // function prototype to determine rising or falling
+
+void StateMachine(int A, int B) {
+    switch (state) {
+        case 0b00:
+            if ((A == 1) && (B == 0)) {
+                state = 0b10;
+                currentQEIcount += 1;
+                Rollover();
+                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+            }
+            if ((A == 0) && (B == 1)) {
+                state = 0b01;
+                currentQEIcount -= 1;
+                Rollover();
+                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+            }
+            break;
+        case 0b10:
+            if ((A == 1) && (B == 1)) {
+                state = 0b11;
+                currentQEIcount += 1;
+                Rollover();
+                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+            }
+            if ((A == 0) & (B == 0)) {
+                state = 0b00;
+                currentQEIcount -= 1;
+                Rollover();
+                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+            }
+            break;
+        case 0b11:
+            if ((A == 0) && (B == 1)) {
+                state = 0b01;
+                currentQEIcount += 1;
+                Rollover();
+                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+            }
+            if ((A = 1) && (B == 0)) {
+                state = 0b10;
+                currentQEIcount -= 1;
+                Rollover();
+                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+            }
+            break;
+        case 0b01:
+            if ((A == 0) && (B == 0)) {
+                state = 0b00;
+                currentQEIcount += 1;
+                Rollover();
+                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+            }
+            if ((A == 1) && (B == 1)) {
+                state = 0b11;
+                currentQEIcount -= 1;
+                Rollover();
+                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+            }
+            break;
+    }
+}
 
 /**
  * @function QEI_Init(void)
@@ -30,7 +113,7 @@ char QEI_Init(void) {
  * @brief This function returns the current count of the Quadrature Encoder in ticks.      
  */
 int QEI_GetPosition(void) {
-    /*....*/
+    return currentQEIcount;
 }
 
 /**
@@ -40,17 +123,34 @@ int QEI_GetPosition(void) {
  * @brief  Resets the encoder such that it starts counting from 0.
  */
 void QEI_ResetPosition() {
-    /*...*/
+    currentQEIcount = 0;
+    state = 0b00;
 }
 
-int main(void) {
-    
-    return 0;
-}
+//int main(void) {
+//    BOARD_Init();
+//    QEI_Init();
+//
+//    while (1) {
+//       // int encoderPos = QEI_GetPosition();
+//      //  printf("Encoder Position: %d\r\n", encoderPos);
+//    }
+//
+//    return 0;
+//}
 
 void __ISR(_CHANGE_NOTICE_VECTOR) ChangeNotice_Handler(void) {
     static char readPort = 0;
     readPort = PORTD; // this read is required to make the interrupt work
     IFS1bits.CNIF = 0;
     //anything else that needs to happen goes here
+
+    // read A and B
+    portA = PORTDbits.RD6; // pin 36
+    portB = PORTDbits.RD7; // pin 37 
+    if ((portA != prevA) || portB != prevB) { // if different from prev
+        StateMachine(portA, portB); // run SM
+        prevA = portA; // set A and B to prev
+        prevB = portB;
+    }
 }
