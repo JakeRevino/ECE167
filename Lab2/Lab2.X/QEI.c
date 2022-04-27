@@ -24,6 +24,10 @@ void Rollover() { // this function keeps the count between 0 and 360 degrees
 
 void StateMachine(int A, int B); // function prototype to determine rising or falling
 
+/* This state machine implements grey encoding for each state (portA and portB)
+ * There are 4 states (0-3) and since we are using grey-encoding, only 2 possible
+ * changes can occur in each state.
+ * */
 void StateMachine(int A, int B) {
     switch (state) {
         case 0b00:
@@ -31,13 +35,13 @@ void StateMachine(int A, int B) {
                 state = 0b10;
                 currentQEIcount += 1;
                 Rollover();
-                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+                // printf("Count: %d\n", currentQEIcount);
             }
             if ((A == 0) && (B == 1)) {
                 state = 0b01;
                 currentQEIcount -= 1;
                 Rollover();
-                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+                //  printf("Count: %d\n", currentQEIcount);
             }
             break;
         case 0b10:
@@ -45,13 +49,13 @@ void StateMachine(int A, int B) {
                 state = 0b11;
                 currentQEIcount += 1;
                 Rollover();
-                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+                //   printf("Count: %d\n", currentQEIcount);
             }
             if ((A == 0) & (B == 0)) {
                 state = 0b00;
                 currentQEIcount -= 1;
                 Rollover();
-                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+                //  printf("Count: %d\n", currentQEIcount);
             }
             break;
         case 0b11:
@@ -59,13 +63,13 @@ void StateMachine(int A, int B) {
                 state = 0b01;
                 currentQEIcount += 1;
                 Rollover();
-                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+                //  printf("Count: %d\n", currentQEIcount);
             }
             if ((A = 1) && (B == 0)) {
                 state = 0b10;
                 currentQEIcount -= 1;
                 Rollover();
-                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+                //  printf("Count: %d\n", currentQEIcount);
             }
             break;
         case 0b01:
@@ -73,13 +77,13 @@ void StateMachine(int A, int B) {
                 state = 0b00;
                 currentQEIcount += 1;
                 Rollover();
-                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+                //  printf("Count: %d\n", currentQEIcount);
             }
             if ((A == 1) && (B == 1)) {
                 state = 0b11;
                 currentQEIcount -= 1;
                 Rollover();
-                printf("A: %d   B: %d   Count: %d\n", A, B, currentQEIcount);
+                //  printf("Count: %d\n", currentQEIcount);
             }
             break;
     }
@@ -123,8 +127,8 @@ int QEI_GetPosition(void) {
  * @brief  Resets the encoder such that it starts counting from 0.
  */
 void QEI_ResetPosition() {
-    currentQEIcount = 0;
-    state = 0b00;
+    currentQEIcount = 0; // reset the count
+    state = 0b00; // reset the state
 }
 
 //int main(void) {

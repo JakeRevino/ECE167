@@ -10,6 +10,7 @@
 #define LightSpeed 340 // speed of light = 340m/s
 #define slope 58.3
 #define b 80.1
+#define OFFSET 1
 
 static int distance;
 static int TOF_start;
@@ -61,11 +62,10 @@ char PING_Init(void) {
  * @return      distance in mm
  */
 unsigned int PING_GetDistance(void) {
-     //58.3x+80.5
-    unsigned int TOF = (PING_GetTimeofFlight() + b) / slope;
-    
-    
-    return TOF - 1;
+    //58.3x+80.5 - This is the Least Squares regression from Excel & from Matlab
+    unsigned int TOF = (PING_GetTimeofFlight() + b) / slope; // this gets the distance and scales it based on least-squares regression model
+
+    return TOF - OFFSET; // After getting the least squares model, the sensor was still off by 1. This subtracts 1 to account for that  
 }
 
 /**
@@ -85,11 +85,10 @@ void __ISR(_CHANGE_NOTICE_VECTOR) ChangeNotice_Handler(void) {
     IFS1bits.CNIF = 0;
     //Anything else that needs to occur goes here
 
-    if (PORTDbits.RD5 == 1) {
-        TOF_start = TIMERS_GetMicroSeconds();
-    }
-    else if (PORTDbits.RD5 == 0) {
-        TOF_end = TIMERS_GetMicroSeconds();
+    if (PORTDbits.RD5 == 1) { // if ECHO pin35 is high
+        TOF_start = TIMERS_GetMicroSeconds(); // record rising edge
+    } else if (PORTDbits.RD5 == 0) { // if ECHO pin35 is low
+        TOF_end = TIMERS_GetMicroSeconds(); // record falling edge
     }
 }
 
@@ -100,7 +99,7 @@ void __ISR(_TIMER_4_VECTOR) Timer4IntHandler(void) {
         PR4 = _10us; // load PR4 with 10us for trigger
         timeFlag = 1; // raise flag
         LATDbits.LATD11 = 1; // raise trigger pin after 60ms
-    } else if (timeFlag == 1) { 
+    } else if (timeFlag == 1) {
         PR4 = _60ms; // load PR4 with 60ms to delay
         timeFlag = 0; // lower the flag
         LATDbits.LATD11 = 0; // lower trigger pin after 10us

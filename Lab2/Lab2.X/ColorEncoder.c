@@ -7,8 +7,9 @@
 #define TIME 200000
 #define SCALER 10
 
-//#define COLOR_ENCODER_TEST
+//#define COLOR_ENCODER_TEST /* ######### UNCOMMENT THIS LINE TO RUN MODULE ########*/ 
 #ifdef COLOR_ENCODER_TEST
+
 int main(void) {
     BOARD_Init();
     PWM_Init();
@@ -24,18 +25,21 @@ int main(void) {
     int angle = 1000;
 
     while (1) {
-        angle = QEI_GetPosition();
+        angle = QEI_GetPosition(); // get the position of the encoder
+
+        // this block prints to the Oled
         sprintf(flexString, "Angle: %d", angle);
         OledClear(OLED_COLOR_BLACK);
         OledDrawString(flexString);
         OledUpdate();
-        DELAY(TIME);
+        //DELAY(TIME);
 
+        printf("Count: %d\r\n", angle); // print out the current angle of encoder
         if (angle >= 0 && angle <= 4) {
             // yellow
-            PWM_SetDutyCycle(PWM_PORTY12, 0);
-            PWM_SetDutyCycle(PWM_PORTY10, 0); // green gets scaled
-            PWM_SetDutyCycle(PWM_PORTY04, 1000);
+            PWM_SetDutyCycle(PWM_PORTY12, 0); // set duty cycle for Red
+            PWM_SetDutyCycle(PWM_PORTY10, 0); // set duty cycle for Green
+            PWM_SetDutyCycle(PWM_PORTY04, 1000); // set duty cycle for Blue
 
         } else if (angle >= 5 && angle <= 8) {
             // lighter yellow
@@ -51,14 +55,14 @@ int main(void) {
 
         } else if (angle >= 13 && angle <= 16) {
             // lighter orange
-            PWM_SetDutyCycle(PWM_PORTY12, 0); 
+            PWM_SetDutyCycle(PWM_PORTY12, 0);
             PWM_SetDutyCycle(PWM_PORTY10, 600);
             PWM_SetDutyCycle(PWM_PORTY04, 1000);
 
         } else if (angle >= 17 && angle <= 20) {
             // red
             PWM_SetDutyCycle(PWM_PORTY12, 0);
-            PWM_SetDutyCycle(PWM_PORTY10, 800); 
+            PWM_SetDutyCycle(PWM_PORTY10, 800);
             PWM_SetDutyCycle(PWM_PORTY04, 1000);
 
         } else if (angle >= 21 && angle <= 24) {
@@ -77,7 +81,7 @@ int main(void) {
             // lighter violet
             PWM_SetDutyCycle(PWM_PORTY12, 400);
             PWM_SetDutyCycle(PWM_PORTY10, 1000);
-            PWM_SetDutyCycle(PWM_PORTY04, 1000); 
+            PWM_SetDutyCycle(PWM_PORTY04, 1000);
 
         } else if (angle >= 33 && angle <= 36) {
             // blue
@@ -174,8 +178,14 @@ int main(void) {
             PWM_SetDutyCycle(PWM_PORTY12, 400);
             PWM_SetDutyCycle(PWM_PORTY10, 0);
             PWM_SetDutyCycle(PWM_PORTY04, 600);
+
         }
     }
+    /* NOTE: The duty cycles used to set a color does not exactly map to the color wheel.
+             More time could have been spent mapping duty cycle to color but the assignment
+             does not require such accuracy 
+     */
+
 
     // if nob has not been turned
     // color == yellow
