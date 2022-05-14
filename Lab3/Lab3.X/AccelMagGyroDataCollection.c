@@ -20,7 +20,7 @@
 #define GyroZOffset 29.072
 #define Raw2AngleConv 131.068
 
-//#define ACTIVATE_MODULE
+#define ACTIVATE_MODULE
 #ifdef ACTIVATE_MODULE
 int main(void) {
     // Required module Inits
